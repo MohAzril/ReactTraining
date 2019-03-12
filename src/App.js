@@ -5,8 +5,8 @@ import Footer from './components/Footer.js'
 import Header from './components/Header.js'
 // import Search from './components/Search.js'
 // import SideList from './components/SideList.js'
-// import Isi from './pages/page1';
-// import Isi2 from './pages/page2';
+import Isi from './pages/page1';
+import Isi2 from './pages/page2';
 // import Isi3 from './pages/page3';
 import Blog from './pages/Blog';
 
@@ -16,14 +16,12 @@ class App extends Component {
       <div>
         {/* <div id="header"></div>
         <div id="isi"></div> */}
-        <Header/>
         {/* <Isi/> */}
         {/* <Isi2/> */}
         {/* <Isi3/> */}
         {/* <Search/>
         <SideList/> */}
         <Blog/>
-        <Footer />
       </div>
     );
   }

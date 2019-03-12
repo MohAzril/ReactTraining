@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
+import Footer from '../components/Footer.js'
+import Header from '../components/Header.js'
 import '../styles/gallery.css';
+
 
 class Isi2 extends Component {
   render() {
     return (
     <div className="Isi2">
+        <Header/>
         <div class="kop">
         <div class="icon">
         <img src={require("../images/ico/ico-gallery.png")}></img><h2>GALLERY</h2>
@@ -43,6 +47,7 @@ class Isi2 extends Component {
             </div>
         </div>    
     </div>
+    <Footer/>
     </div>
     );
   }

@@ -20,7 +20,7 @@ const baseUrl = "https://newsapi.org/v2/"
 const urlHeadline = baseUrl + "top-headlines?" + "country=id&" + "pageSize=3&"+ "apiKey=" + apiKey;
 const urlNews = baseUrl + "everything?" +"q=meme&" + "pageSize=3&"+ "apiKey=" + apiKey;
 
-class Blog extends Component {
+class Category extends Component {
 constructor(props){
     super(props);
     this.state = {
@@ -70,6 +70,17 @@ handleInputChange = e => {
     );
 };
 
+handleOnClick = e => {
+    let category = e.target.value;
+    let self = this;
+    axios.get(baseUrl+"everything?q="+category+ "&pageSize=3&"+ "apiKey=" + apiKey)
+    .then(function(response){self.setState({listNews:response.data.articles});
+    })
+    .catch(function(error){
+        console.log(error);
+    }); 
+};
+
 searchNews = async keyword => {
     console.log("searchNews", keyword);
     const self = this;
@@ -96,7 +107,7 @@ render() {
         return <Redirect to={{ pathname: "/signin"}}/>;
     } else {
     return (
-    <div className="Blog">
+    <div className="Category">
         {/* <Header/> */}
         <div class="container-fluid">
         <div class="row">
@@ -125,24 +136,9 @@ render() {
         
         <div class="col-md-4">
             {/* <Search/> */}
-            <Search 
-            title="Cari" 
-            placeholder="type keyword.."
-            doSearch={this.handleInputChange}
-            keyword={this.state.search}
-            />
-            <div className="SideList">
-                <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center fav">
-                    Artikel Favorit
-                </li>
-                {listTopNews.map((item,key) =>{
-                const src_img = item.urlToImage === null ? az : item.urlToImage;
-                const content = item.urlToImage !== null ? item.content : "";
-                return <SideList index={key} title={item.title} img={src_img} content={content}/>;
-                })}
-                </ul>
-            </div>
+            <button className="btn btn-primary" value="SepakBola" onClick={(e)=>this.handleOnClick(e)}>SepakBola</button>
+            <button className="btn btn-primary" value="Meme" onClick={(e)=>this.handleOnClick(e)}>Meme</button>
+            <button className="btn btn-primary" value="Thailand" onClick={(e)=>this.handleOnClick(e)}>Shawdikap</button>
             {/* <SideList/> */}
         </div>
         
@@ -154,4 +150,4 @@ render() {
   }}
 }
 
-export default withRouter(Blog) ;
+export default withRouter(Category) ;

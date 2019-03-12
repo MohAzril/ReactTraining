@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
+import {Redirect} from "react-router-dom";
 // import logo from './logo.svg';
+import Footer from '../components/Footer.js'
+import Header from '../components/Header.js'
 import '../styles/style.css';
 
 class Isi extends Component {
   render() {
+    const is_login = JSON.parse(localStorage.getItem("is_login"));
+    if(is_login === null){
+        return <Redirect to={{ pathname: "/signin"}}/>;
+    } else {
     return (
     <div className="Isi">
+        {/* <Header/> */}
         <div id="banner">
         <div class="container-fluid">
         <div class="row">
@@ -65,9 +73,10 @@ class Isi extends Component {
         </div>
         </div>
     </div>
+    <Footer/>
     </div>
     );
-  }
+  }}
 }
 
 export default Isi;

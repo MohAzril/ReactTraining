@@ -6,15 +6,21 @@ import './styles/index.css';
 // import Isi from './Isi';
 // import Isi2 from './Isi2';
 // import Isi3 from './Isi3';
-import App from './App';
+import AppRouter from "./AppRouter"
+// import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {BrowserRouter} from "react-router-dom";
 
-ReactDOM.render(<App />, document.getElementById('root'));
-// ReactDOM.render(<Header />, document.getElementById('header'));
-// ReactDOM.render(<Isi />, document.getElementById('isi'));
-// // ReactDOM.render(<Isi2 />, document.getElementById('isi'));
-// // ReactDOM.render(<Isi3 />, document.getElementById('isi'));
-// ReactDOM.render(<Footer />, document.getElementById('footer'));
+const rootEl = document.getElementById('root');
+const render = Component =>
+    ReactDOM.render(
+    <BrowserRouter>
+        <Component/>
+    </BrowserRouter> ,
+    rootEl
+    );
+render(AppRouter);
+// ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
