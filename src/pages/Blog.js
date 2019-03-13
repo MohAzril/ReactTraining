@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import {Redirect} from "react-router-dom";
+import {connect} from "unistore/react";
+import {actions} from "../store";
+import {withRouter} from "react-router-dom";
 // import logo from './logo.svg';
 import '../styles/blog.css';
 import Footer from '../components/Footer.js'
-import Header from '../components/Header.js'
 import Search from '../components/Search.js'
 import SideList from '../components/SideList.js'
 import ListNews from '../components/ListNews'
-import axios from 'axios';
 
 //dummy date
 import az from "../images/berita1.jpg"
 import { async } from 'q';
-import { withRouter } from 'react-router-dom';
 
 //News API
 const apiKey = "72aadd1aff8c490ea5c90d2e5225a042";
@@ -21,78 +21,25 @@ const urlHeadline = baseUrl + "top-headlines?" + "country=id&" + "pageSize=3&"+ 
 const urlNews = baseUrl + "everything?" +"q=meme&" + "pageSize=3&"+ "apiKey=" + apiKey;
 
 class Blog extends Component {
-constructor(props){
-    super(props);
-    this.state = {
-        listNews:[],
-        listTopNews:[],
-        username:"",
-        isLogin:false,
-        // value:'',
-        search:""
-    };
-}
 
 componentDidMount = () =>{
-    const self = this;
-    axios.get(urlNews)
-    .then(function(response){
-        self.setState({listNews:response.data.articles });
-        // handle response
-        console.log(response.data);
-    })
-    .catch(function(error){
-        // handle error
-        console.log(error);
+    this.props.cariBerita().then(() => {
+        console.log("this",this);
     });
-    axios.get(urlHeadline)
-    .then(function(response){
-        self.setState({listTopNews:response.data.articles });
-        // handle response
-        console.log(response.data);
-    })
-    .catch(function(error){
-        // handle error
-        console.log(error);
-    });
-} 
+}; 
 
 handleInputChange = e => {
     console.log("event", e.target.value);
-    let value = e.target.value;
-    this.setState(
-        {
-            search: value
-        },
-        () =>{
-            this.searchNews(value);
-        }
-    );
-};
-
-searchNews = async keyword => {
-    console.log("searchNews", keyword);
-    const self = this;
-    if(keyword.length>2){
-        try{
-            const response = await axios.get(
-                baseUrl+"everything?q="+keyword+ "&pageSize=3&"+ "apiKey=" + apiKey
-            );
-            console.log(response);
-            self.setState({listNews:response.data.articles});
-        }
-        catch (error){
-            console.error(error);
-        }
-    }
+    // let value = e.target.value;
+    this.props.setField(e);
+    this.props.searchNews(e.target.value);
 };
 
 render() {
     console.log("here render")
     // const news = this.state.ListNews;
-    const is_login = JSON.parse(localStorage.getItem("is_login"));
-    const {listNews, listTopNews, username, isLogin} = this.state;
-    if(is_login === null){
+    console.log("is_login", this.props.is_login);
+    if(!this.props.is_login){
         return <Redirect to={{ pathname: "/signin"}}/>;
     } else {
     return (
@@ -115,7 +62,7 @@ render() {
                     <a href="#">Start Bootstrap</a>
                 </div>    
             </div>    
-            {listNews.map((item,key) =>{
+            {this.props.listNews.map((item,key) =>{
                 const src_img = item.urlToImage === null ? az : item.urlToImage;
                 const content = item.urlToImage !== null ? item.content : "";
                 return <ListNews key={key} title={item.title} img={src_img} content={content}/>;
@@ -129,14 +76,14 @@ render() {
             title="Cari" 
             placeholder="type keyword.."
             doSearch={this.handleInputChange}
-            keyword={this.state.search}
+            // keyword={this.props.search}
             />
             <div className="SideList">
                 <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center fav">
                     Artikel Favorit
                 </li>
-                {listTopNews.map((item,key) =>{
+                {this.props.listTopNews.map((item,key) =>{
                 const src_img = item.urlToImage === null ? az : item.urlToImage;
                 const content = item.urlToImage !== null ? item.content : "";
                 return <SideList index={key} title={item.title} img={src_img} content={content}/>;
@@ -154,4 +101,5 @@ render() {
   }}
 }
 
-export default withRouter(Blog) ;
+export default connect("is_login,email,full_name,listNews,listTopNews", actions)
+(withRouter(Blog));

@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import MainRoute from "./Routes/MainRoute";
+import {connect} from "unistore/react";
+import {actions} from "./store";
 import {withRouter} from "react-router-dom";
-
 // App styles
 // import "./styles/App.css";
 //Custom components
@@ -9,7 +10,7 @@ import Header from "./components/Header";
 
 class AppRouter extends Component{
     postSignout = () =>{
-        localStorage.removeItem("is_login");
+        this.props.signOut()
         // localStorage.setItem("is_login",true);
         this.props.history.push("/");
     };
@@ -22,4 +23,6 @@ class AppRouter extends Component{
         );
     }
 }
-export default withRouter(AppRouter);
+
+export default connect("is_login,email,full_name,listNews,listTopNews", actions)
+(withRouter(AppRouter));

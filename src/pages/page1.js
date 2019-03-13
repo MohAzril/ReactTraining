@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import {Redirect} from "react-router-dom";
+import {connect} from "unistore/react";
+import {actions} from "../store";
+import {withRouter} from "react-router-dom";
 // import logo from './logo.svg';
 import Footer from '../components/Footer.js'
-import Header from '../components/Header.js'
 import '../styles/style.css';
 
 class Isi extends Component {
   render() {
-    const is_login = JSON.parse(localStorage.getItem("is_login"));
-    if(is_login === null){
+    console.log("is_login", this.props.is_login);
+    if(!this.props.is_login){
         return <Redirect to={{ pathname: "/signin"}}/>;
     } else {
     return (
@@ -22,7 +24,7 @@ class Isi extends Component {
                     <br/>
                     <br/>
                     <span class="profil"></span>
-                    <h1 class="nama">Nama Lengkap</h1>
+                    <h1 class="nama">{this.props.full_name}</h1>
                     <div class="Alamat">     
                         <img class="alamat" src={require("../images/ico/ico-location@2x.png")}/>
                         <p class="alamat">Malang, East Java, Indonesia</p><br/>
@@ -60,7 +62,7 @@ class Isi extends Component {
                         <tr>
                             <td class="border"><strong>Email</strong></td>
                             <td class="border border-right-0">:</td>
-                            <td class="border border-left-0"> al@alphatech.id</td>
+                            <td class="border border-left-0">{this.props.email}</td>
                         </tr>
                         <tr>
                             <td class="border"><strong>Address</strong></td>
@@ -79,4 +81,5 @@ class Isi extends Component {
   }}
 }
 
-export default Isi;
+export default connect("is_login,email,full_name", actions)
+(withRouter(Isi));

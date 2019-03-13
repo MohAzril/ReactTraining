@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './styles/index.css';
-// import Header from './Header';
-// import Footer from './Footer';
-// import Isi from './Isi';
-// import Isi2 from './Isi2';
-// import Isi3 from './Isi3';
+import {Provider} from "unistore/react";
+import {store} from "./store"
 import AppRouter from "./AppRouter"
 // import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -14,9 +11,11 @@ import {BrowserRouter} from "react-router-dom";
 const rootEl = document.getElementById('root');
 const render = Component =>
     ReactDOM.render(
-    <BrowserRouter>
-        <Component/>
-    </BrowserRouter> ,
+    <Provider store={store}>
+        <BrowserRouter>
+            <Component/>
+        </BrowserRouter>
+    </Provider>,
     rootEl
     );
 render(AppRouter);

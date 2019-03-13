@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import {Redirect} from "react-router-dom";
+import {connect} from "unistore/react";
+import {actions} from "../store";
+import {withRouter} from "react-router-dom";
 // import logo from './logo.svg';
 import '../styles/blog.css';
 import Footer from '../components/Footer.js'
-import Header from '../components/Header.js'
-import Search from '../components/Search.js'
-import SideList from '../components/SideList.js'
 import ListNews from '../components/ListNews'
 import axios from 'axios';
 
 //dummy date
 import az from "../images/berita1.jpg"
 import { async } from 'q';
-import { withRouter } from 'react-router-dom';
 
 //News API
 const apiKey = "72aadd1aff8c490ea5c90d2e5225a042";
@@ -34,76 +33,23 @@ constructor(props){
 }
 
 componentDidMount = () =>{
-    const self = this;
-    axios.get(urlNews)
-    .then(function(response){
-        self.setState({listNews:response.data.articles });
-        // handle response
-        console.log(response.data);
-    })
-    .catch(function(error){
-        // handle error
-        console.log(error);
+    this.props.cariBerita().then(() => {
+        console.log("this",this);
     });
-    axios.get(urlHeadline)
-    .then(function(response){
-        self.setState({listTopNews:response.data.articles });
-        // handle response
-        console.log(response.data);
-    })
-    .catch(function(error){
-        // handle error
-        console.log(error);
-    });
-} 
-
-handleInputChange = e => {
-    console.log("event", e.target.value);
-    let value = e.target.value;
-    this.setState(
-        {
-            search: value
-        },
-        () =>{
-            this.searchNews(value);
-        }
-    );
-};
+}; 
 
 handleOnClick = e => {
-    let category = e.target.value;
-    let self = this;
-    axios.get(baseUrl+"everything?q="+category+ "&pageSize=3&"+ "apiKey=" + apiKey)
-    .then(function(response){self.setState({listNews:response.data.articles});
-    })
-    .catch(function(error){
-        console.log(error);
-    }); 
-};
-
-searchNews = async keyword => {
-    console.log("searchNews", keyword);
-    const self = this;
-    if(keyword.length>2){
-        try{
-            const response = await axios.get(
-                baseUrl+"everything?q="+keyword+ "&pageSize=3&"+ "apiKey=" + apiKey
-            );
-            console.log(response);
-            self.setState({listNews:response.data.articles});
-        }
-        catch (error){
-            console.error(error);
-        }
-    }
+    console.log("event", e.target.value);
+    // let value = e.target.value;
+    // this.props.setField(e);
+    this.props.searchNews(e.target.value);
 };
 
 render() {
     console.log("here render")
     // const news = this.state.ListNews;
-    const is_login = JSON.parse(localStorage.getItem("is_login"));
-    const {listNews, listTopNews, username, isLogin} = this.state;
-    if(is_login === null){
+    console.log("is_login", this.props.is_login);
+    if(!this.props.is_login){
         return <Redirect to={{ pathname: "/signin"}}/>;
     } else {
     return (
@@ -126,7 +72,7 @@ render() {
                     <a href="#">Start Bootstrap</a>
                 </div>    
             </div>    
-            {listNews.map((item,key) =>{
+            {this.props.listNews.map((item,key) =>{
                 const src_img = item.urlToImage === null ? az : item.urlToImage;
                 const content = item.urlToImage !== null ? item.content : "";
                 return <ListNews key={key} title={item.title} img={src_img} content={content}/>;
@@ -136,9 +82,9 @@ render() {
         
         <div class="col-md-4">
             {/* <Search/> */}
-            <button className="btn btn-primary" value="SepakBola" onClick={(e)=>this.handleOnClick(e)}>SepakBola</button>
-            <button className="btn btn-primary" value="Meme" onClick={(e)=>this.handleOnClick(e)}>Meme</button>
-            <button className="btn btn-primary" value="Thailand" onClick={(e)=>this.handleOnClick(e)}>Shawdikap</button>
+            <button className="btn btn-primary" name="search" value="SepakBola" onClick={(e)=>this.handleOnClick(e)}>SepakBola</button>
+            <button className="btn btn-primary" name="search" value="Meme" onClick={(e)=>this.handleOnClick(e)}>Meme</button>
+            <button className="btn btn-primary" name="search" value="Thailand" onClick={(e)=>this.handleOnClick(e)}>Shawdikap</button>
             {/* <SideList/> */}
         </div>
         
@@ -150,4 +96,6 @@ render() {
   }}
 }
 
-export default withRouter(Category) ;
+export default connect("is_login,email,full_name,listNews,listTopNews", actions)
+(withRouter(Category));
+// export default withRouter(Category) ;
